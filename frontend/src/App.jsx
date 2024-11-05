@@ -10,6 +10,9 @@ function App() {
     const fetchEvents = async () => {
       await fetchEventSource("http://localhost:5000/events", {
         method: "GET",
+
+
+        
         onmessage(event) {
           const newMessage = JSON.parse(event.data);
           setMessages((prevMessages) => [...prevMessages, newMessage]);
