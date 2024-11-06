@@ -1,26 +1,29 @@
-// index.js
-const express = require("express");
-const axios = require("axios"); // To make an API request
+import express, { Request, Response } from "express";
+import axios from "axios"; // To make an API request
+import cors from "cors";
+
 const app = express();
 const PORT = 5000;
-const cors = require("cors");
+const cors=cors();
+
 app.use(cors());
-let clients = [];
+let clients: Response[] = []; // Declare clients as an array of Response objects
 
+// // Import route handlers
+// import sseRoutes from "./routes/sseRoutes";
+// import taskRoutes from "./routes/taskRoutes";
 
-const sseRoutes = require("./routes/sseRoutes");
-const taskRoutes = require("./routes/taskRoutes");
 // SSE endpoint
-app.get("/events", (req, res) => {
+app.get("/events", (req: Request, res: Response) => {
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
 
   // Add client to the list
-  //   console.log(res)
   clients.push(res);
 
   console.log({ clients });
+
   // Clean up on client disconnect
   req.on("close", () => {
     clients = clients.filter((client) => client !== res);
@@ -29,22 +32,24 @@ app.get("/events", (req, res) => {
 });
 
 // Function to send an event to all clients
-const broadcastEvent = (data) => {
+const broadcastEvent = (data: any): void => {
   clients.forEach((client) =>
     client.write(`data: ${JSON.stringify(data)}\n\n`)
   );
 };
 
 // Endpoint to simulate an API call and emit an event to clients on success
-app.post("/trigger-api", async (req, res) => {
+app.post("/trigger-api", async (req: Request, res: Response) => {
   try {
-    console.log("hellop");
+    console.log("Starting API call");
+
     // Simulating an API request
     const apiResponse = await axios.get(
       "https://jsonplaceholder.typicode.com/todos/1"
     );
     const data = { message: "API call succeeded", result: apiResponse.data };
     console.log(data);
+
     // Emit to all connected clients
     broadcastEvent(data);
 
@@ -54,12 +59,8 @@ app.post("/trigger-api", async (req, res) => {
   }
 });
 
-
-
-
-
-
-const gracefulShutdown = () => {
+// Graceful shutdown
+const gracefulShutdown = (): void => {
   console.log("Initiating graceful shutdown...");
   server.close(() => {
     console.log("All connections closed. Server shutdown complete.");
@@ -70,11 +71,7 @@ const gracefulShutdown = () => {
 process.on("SIGTERM", gracefulShutdown);
 process.on("SIGINT", gracefulShutdown);
 
-
-
-
-
 // Start the server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
