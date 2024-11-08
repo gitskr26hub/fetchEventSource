@@ -1,12 +1,12 @@
 import express, { Request, Response } from "express";
 import axios from "axios"; // To make an API request
-import cors from "cors";
+// import cors from "cors";
 
 const app = express();
 const PORT = 5000;
+// const cors=cors()
 
-
-app.use(cors());
+// app.use(cors());
 let clients: Response[] = []; // Declare clients as an array of Response objects
 
 // // Import route handlers
