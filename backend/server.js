@@ -8,8 +8,8 @@ app.use(cors());
 let clients = [];
 
 
-const sseRoutes = require("./routes/sseRoutes");
-const taskRoutes = require("./routes/taskRoutes");
+// const sseRoutes = require("./routes/sseRoutes");
+// const taskRoutes = require("./routes/taskRoutes");
 // SSE endpoint
 app.get("/events", (req, res) => {
   res.setHeader("Content-Type", "text/event-stream");
@@ -20,7 +20,7 @@ app.get("/events", (req, res) => {
   //   console.log(res)
   clients.push(res);
 
-  console.log({ clients });
+  // console.log({ clients });
   // Clean up on client disconnect
   req.on("close", () => {
     clients = clients.filter((client) => client !== res);
@@ -30,10 +30,44 @@ app.get("/events", (req, res) => {
 
 // Function to send an event to all clients
 const broadcastEvent = (data) => {
-  clients.forEach((client) =>
-    client.write(`data: ${JSON.stringify(data)}\n\n`)
+  clients.forEach((client) =>{
+    // console.log({client})
+    client?.write(`data: ${JSON.stringify(data)}\n\n`);
+  }
   );
 };
+
+
+setInterval(async() => {
+  try {
+   
+    // Simulating an API request
+    const apiResponse = {NAME:"SUGAM"}
+    const data = { message: "API call succeeded", result: apiResponse };
+    // console.log(data);
+    // Emit to all connected clients
+    broadcastEvent(data);
+
+    console.log( { message: "Event broadcasted to all clients",} );
+    
+   
+  } catch (error) {
+    console.error(error)
+  }
+},[2000])
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Endpoint to simulate an API call and emit an event to clients on success
 app.post("/trigger-api", async (req, res) => {
@@ -44,7 +78,7 @@ app.post("/trigger-api", async (req, res) => {
       "https://jsonplaceholder.typicode.com/todos/1"
     );
     const data = { message: "API call succeeded", result: apiResponse.data };
-    console.log(data);
+    // console.log(data);
     // Emit to all connected clients
     broadcastEvent(data);
 
