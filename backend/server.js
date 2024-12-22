@@ -4,7 +4,7 @@ const axios = require("axios"); // To make an API request
 const app = express();
 const PORT = 5000;
 const cors = require("cors");
-app.use(cors());
+app.use(cors({origin:'*'}));
 let clients = [];
 
 
