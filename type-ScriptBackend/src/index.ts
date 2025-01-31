@@ -7,7 +7,8 @@ const PORT = 5000;
 
 
 
-
+// add cors here and check security in this file 
+// add ip in cors 
 
 
 
