@@ -6,26 +6,26 @@ import moment from "moment"
 function App() {
   const [messages, setMessages] = useState([]);
 // fintech code added hete 
-  // useEffect(() => {
-  //   // alert(moment());
-  //   const fetchEvents = async () => {
-  //     await fetchEventSource("http://localhost:8000/events", {
-  //       method: "GET",
+  useEffect(() => {
+    // alert(moment());
+    const fetchEvents = async () => {
+      await fetchEventSource("http://localhost:8000/events", {
+        method: "GET",
        
       
-  //       onopen(res) {
-  //         if (res.ok && res.status === 200) {
-  //           console.log("Connection made ", res);
-  //         } else if (
-  //           res.status >= 400 &&
-  //           res.status < 500 &&
-  //           res.status !== 429
-  //         ) {
-  //           console.log("Client side error ", res);
-  //         }
-  //       },
+        onopen(res) {
+          if (res.ok && res.status === 200) {
+            console.log("Connection made ", res);
+          } else if (
+            res.status >= 400 &&
+            res.status < 500 &&
+            res.status !== 429
+          ) {
+            console.log("Client side error ", res);
+          }
+        },
 
-
+// uncomment code herre
 //
   
 
